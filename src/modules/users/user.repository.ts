@@ -2,6 +2,7 @@ import { prisma } from "../../config/prisma";
 import { User } from "@prisma/client";
 
 export class UserRepository {
+  
   async create(data: {
     name: string;
     email: string;
@@ -11,6 +12,24 @@ export class UserRepository {
       data,
     });
   }
+  async findAndCount(
+    skip: number,
+    take: number
+  ): Promise<[User[], number]> {
+    const [data, total] = await Promise.all([
+      prisma.user.findMany({
+        skip,
+        take,
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+      prisma.user.count(),
+    ]);
+
+    return [data, total];
+  }
+
 
   async findAll(skip: number, take: number): Promise<User[]> {
     return prisma.user.findMany({

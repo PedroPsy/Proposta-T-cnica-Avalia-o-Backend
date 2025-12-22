@@ -2,6 +2,14 @@ import bcrypt from "bcryptjs";
 import { User } from "@prisma/client";
 import { UserRepository } from "./user.repository";
 
+interface PaginatedResult<T> {
+  data: T[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export class UserService {
   private userRepository: UserRepository;
 
@@ -30,10 +38,27 @@ export class UserService {
     });
   }
 
-  async listUsers(page = 1, limit = 10): Promise<User[]> {
+  async listUsers(
+    page: number = 1,
+    limit: number = 10
+  ): Promise<PaginatedResult<User>> {
+    page = Math.max(1, page);
+    limit = Math.min(Math.max(1, limit), 100);
+
     const skip = (page - 1) * limit;
 
-    return this.userRepository.findAll(skip, limit);
+    const [data, total] = await this.userRepository.findAndCount(
+      skip,
+      limit
+    );
+
+    return {
+      data,
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async getUserById(id: string): Promise<User> {
@@ -53,7 +78,7 @@ export class UserService {
       email?: string;
     }
   ): Promise<User> {
-    await this.getUserById(id); // valida existência
+    await this.getUserById(id);
 
     if (data.email) {
       const emailAlreadyExists = await this.userRepository.findByEmail(
@@ -69,7 +94,7 @@ export class UserService {
   }
 
   async deleteUser(id: string): Promise<void> {
-    await this.getUserById(id); // valida existência
+    await this.getUserById(id);
     await this.userRepository.delete(id);
   }
 

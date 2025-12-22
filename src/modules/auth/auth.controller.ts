@@ -1,5 +1,6 @@
 import {Request, Response} from "express";
 import {AuthService} from "./auth.service";
+import { loginSchema } from "./auth.schema";
 
 export class AuthController {
     private authService: AuthService;
@@ -9,13 +10,12 @@ export class AuthController {
     }
 
     async login(req: Request, res: Response) {
-        try{
-            const {email, password} = req.body;
-
-            const result = await this.authService.login(email, password);
-            return res.status(200).json(result);
-        } catch (error: any) {
-            return res.status(401).json({ error: error.message || "Falha na autenticação"});
-        }
+    try {
+        const { email, password } = loginSchema.parse(req.body);
+        const result = await this.authService.login(email, password);
+        return res.status(200).json(result);
+    } catch (error: any) {
+        return res.status(401).json({ error: error.message || "Falha na autenticação"});
     }
+}
 }

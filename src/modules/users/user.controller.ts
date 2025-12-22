@@ -25,21 +25,29 @@ export class UserController {
 }
 
   async list(req: Request, res: Response) {
-    try {
-      const page = Number(req.query.page) || 1;
-      const limit = Number(req.query.limit) || 10;
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
 
-      const users = await this.userService.listUsers(page, limit);
+    const result = await this.userService.listUsers(page, limit);
 
-      const usersWithoutPassword = users.map(({ password, ...rest }) => rest);
+    const usersWithoutPassword = result.data.map(
+      ({ password, ...rest }) => rest
+    );
 
-      return res.status(200).json(usersWithoutPassword);
-    } catch (error: any) {
-      return res.status(400).json({
-        message: error.message || "Erro ao listar usuários",
-      });
-    }
+    return res.status(200).json({
+      data: usersWithoutPassword,
+      page: result.page,
+      limit: result.limit,
+      total: result.total,
+      totalPages: result.totalPages,
+    });
+  } catch (error: any) {
+    return res.status(400).json({
+      message: error.message || "Erro ao listar usuários",
+    });
   }
+}
 
   async getById(req: Request, res: Response) {
     try {
