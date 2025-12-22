@@ -4,18 +4,25 @@
 
 Avaliar a capacidade de projetar e construir uma API RESTful com operações CRUD para usuários e um sistema de autenticação JWT, utilizando **TypeScript**. A solução deve ser simples e demonstrar boas práticas de engenharia de software, com foco em código limpo, modular e de fácil manutenção.
 
----
+## Instruções sobre como rodar o projeto
 
-## Requisitos Técnicos
+* **Clonar o repositório:**
+    * git clone https://github.com/PedroPsy/Proposta-T-cnica-Avalia-o-Backend.git
 
-* **Linguagem e Ferramentas:**
-    * Implementação em **TypeScript**.
-    * Uso de um framework web minimalista (ex: Express, Fastify).
-    * Escolha de um ORM/biblioteca para acesso a dados (ex: Prisma, TypeORM).
-    * Bibliotecas para validação de dados, hashing de senhas e JWT (ex: Zod, Bcryptjs, jsonwebtoken).
-* **Arquitetura:**
-    * Código **modular** e com **separação de responsabilidades**.
-    * Respostas padronizadas com status HTTP adequados.
+* **Instalar dependencias do projeto (Dentro da pasta do projeto):**
+    * npm install
+
+* **Configurar variáveis de ambiente**
+    * O repositório tem um arquivo exemplo chamado .env.example. Copie ele para criar seu .env real
+    
+* **Criar o banco e rodar migrations**
+    * npx prisma generate
+    * npx prisma migrate dev --name init
+
+
+* **Rodar a API em modo desenvolvimento**
+    * npm run dev
+
 * **Funcionalidades:**
     * **Módulo de Usuários:**
         * `POST /users`: Criação de usuário.
@@ -28,11 +35,5 @@ Avaliar a capacidade de projetar e construir uma API RESTful com operações CRU
         * `POST /auth/login`: Login para obter um token JWT.
         * Implementação de um **middleware** para proteger as rotas de usuário (exceto o login e a criação de usuários).
 
----
 
-##  Entrega
 
-* Link para o repositório público (GitHub).
-* Um arquivo `README.md` no repositório sobre como configurar e rodar o projeto.
-
----
