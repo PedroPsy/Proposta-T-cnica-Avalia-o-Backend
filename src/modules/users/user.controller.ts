@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { UserService } from "./user.service";
+import { createUserSchema } from "./user.schema";
 
 export class UserController {
   private userService: UserService;
@@ -8,25 +9,20 @@ export class UserController {
     this.userService = new UserService();
   }
 
-  async create(req: Request, res: Response) {
-    try {
-      const { name, email, password } = req.body;
+ async create(req: Request, res: Response) {
+  try {
+    const validatedData = createUserSchema.parse(req.body);
 
-      const user = await this.userService.createUser({
-        name,
-        email,
-        password,
-      });
+    const user = await this.userService.createUser(validatedData);
 
-      const { password: _, ...userWithoutPassword } = user;
-
-      return res.status(201).json(userWithoutPassword);
-    } catch (error: any) {
-      return res.status(400).json({
-        message: error.message || "Erro ao criar usuário",
-      });
-    }
+    const { password: _, ...userWithoutPassword } = user;
+    return res.status(201).json(userWithoutPassword);
+  } catch (error: any) {
+    return res.status(400).json({
+      message: error.message || "Erro ao criar usuário",
+    });
   }
+}
 
   async list(req: Request, res: Response) {
     try {
